@@ -1,19 +1,21 @@
-const request = require('request');
-const cheerio = require('cheerio');
-const json2csv = require('json2csv').Parser;
-const fs = require('fs');
-const dir = './data';
-const date = new Date();
-let homeURL = 'http://shirts4mike.com/';
-let entryPoint = homeURL + 'shirts.php';
-let errorMessage1 = `Sorry! Can't connect to ${homeURL} due to a connection error (error code: `;
-let shirtLinks = [];
-let imgLinks = [];
-let productTitles = [];
-let shirtPrices = [];
-let dates = [];
-let objsJSON = [];
+const request = require('request'); //Requiring the request module for the http requests being made.
+const cheerio = require('cheerio'); //Requiring the cheerio module for the DOM traversal of the response body.
+const json2csv = require('json2csv').Parser; //Requiring the json2csv module to change the data from JSON to CSV.
+const fs = require('fs'); //Requiring the fs module for writing data to the necessary files.
+const dir = './data'; //Providing a variable to create a data directory and store our csv files in.
+const date = new Date(); //Calling the date class in order to provide our timestamps throughout our files.
+let homeURL = 'http://shirts4mike.com/'; //Creating a variable in order to hold the url for the homepage of Mike's Shirts.
+let entryPoint = homeURL + 'shirts.php'; //Creating a variable to append all the scraped links onto.
+let errorMessage1 = `Sorry! Can't connect to ${homeURL} due to a connection error (error code: `; //Providing a base error message for lack of connection.
+let shirtLinks = []; //Initializing an array to store all the shirt links in.
+let imgLinks = []; //Initializing an array to store all the image links in.
+let productTitles = []; //Initializing an array to store all the product titles in.
+let shirtPrices = []; //Initializing an array to store all the shirt prices in.
+let dates = []; //Initializing an array to store all the dates/timestamps in.
+let objsJSON = []; //Initializing an array to store all the JSON objects in once the requests are made.
 
+
+//Function that creates a directory for data, and creates a csv to store within that data folder.
 function toCSV (json) {
   const fields = ['Name', 'Price', 'ImageURL', 'URL', 'Time'];
   const json2csvParser = new json2csv({fields});
@@ -26,6 +28,13 @@ function toCSV (json) {
   })
 };
 
+
+//Requests being made in order to load the response into cheerio.
+//Using cheerio, we traverse the body of the response using JQuery to scrape all the necessary data from the response.
+//After pulling the data we need, we push it to the corresponding array.
+//Once all requests are made (async), we loop through all the arrays to add the information to a JSON object array we initialized earlier.
+//If the internet is turned off, or the request throws an error due to page being down, there will be a console message displaying the error and code.
+//This error will also create a scraper-error log, and if it exists it will append the error message to the bottom of the file.
 request(entryPoint, function(error, response, body) {
   if (error) {
     console.log(errorMessage1 + `${error.code}).`);
@@ -86,7 +95,7 @@ request(entryPoint, function(error, response, body) {
                     for (let i = 0; i < 8; i++) {
                       objsJSON[i] = {Name: productTitles[i], Price: shirtPrices[i], ImageURL: homeURL + imgLinks[i], URL: homeURL + shirtLinks[i], Time: dates[i]};
                     }
-                    toCSV(objsJSON);
+                    toCSV(objsJSON); // Calling the function we made earlier to write objsJSON to CSV.
                   })
                 })
               })
