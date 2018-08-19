@@ -1,0 +1,23 @@
+{
+  "name": "content-scraper-tanuj-aswani",
+  "version": "1.0.0",
+  "description": "content scraper",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ./app.js"
+  },
+  "keywords": [
+    "content",
+    "scraper",
+    "node"
+  ],
+  "author": "Tanuj Aswani",
+  "license": "MIT",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.2",
+    "fs": "0.0.1-security",
+    "json2csv": "^4.2.1",
+    "request": "^2.88.0"
+  }
+}
